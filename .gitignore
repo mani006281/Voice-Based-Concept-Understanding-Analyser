@@ -26,3 +26,22 @@ reports/*.pdf
 # Uploaded Audio (optional)
 uploads/*
 !uploads/.gitkeep
+# Virtual Environment
+venv/
+
+# Environment Variables
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# IDE
+.vscode/
+
+# Database
+*.db
+*.sqlite3
+
+# Reports
+reports/*.pdf

@@ -1,0 +1,28 @@
+# Virtual Environment
+venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment Variables
+.env
+
+# Database
+*.db
+*.sqlite3
+
+# IDE
+.vscode/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Generated Reports
+reports/*.pdf
+
+# Uploaded Audio (optional)
+uploads/*
+!uploads/.gitkeep

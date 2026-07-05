@@ -3,6 +3,10 @@
 > An AI-powered system that evaluates a student's conceptual understanding from voice explanations using Speech-to-Text, Semantic Similarity Analysis, and Google Gemini AI.
 
 ---
+# Demo link
+
+https://drive.google.com/file/d/1XJV4o_8Oq670-tRmO0tpXm5ypKoNKZ-j/view
+
 
 # 📌 Project Overview
 
@@ -302,9 +306,6 @@ Information Technology
 https://github.com/mani006281/Voice-Based-Concept-Understanding-Analyser
 
 ---
-# Demo link
-
-https://drive.google.com/file/d/1XJV4o_8Oq670-tRmO0tpXm5ypKoNKZ-j/view
 
 # ⭐ Acknowledgements
 

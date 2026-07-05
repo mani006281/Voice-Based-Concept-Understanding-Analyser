@@ -1,4 +1,5 @@
 from google import genai
+from google.genai.errors import ServerError
 from backend.config import GOOGLE_API_KEY
 
 client = genai.Client(api_key=GOOGLE_API_KEY)
@@ -25,9 +26,28 @@ Missing Concepts:
 Suggestions:
 """
 
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
-    )
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
 
-    return response.text
+        return response.text
+
+    except ServerError:
+        return """
+Concept Understanding:
+AI feedback is temporarily unavailable.
+
+Strengths:
+Generated locally.
+
+Missing Concepts:
+Unable to analyze because the Gemini service is busy.
+
+Suggestions:
+Please try again after a few minutes.
+"""
+
+    except Exception as e:
+        return f"Error generating feedback: {str(e)}"

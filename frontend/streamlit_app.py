@@ -2,10 +2,10 @@ import os
 import sys
 import streamlit as st
 
-# Allow importing from the project root
+# Add project root to Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from models.speech_to_text import transcribe_audio
+from backend.services import evaluate_audio
 
 st.set_page_config(
     page_title="Voice Based Concept Understanding Analyser",
@@ -15,12 +15,16 @@ st.set_page_config(
 
 st.title("🎤 Voice Based Concept Understanding Analyser")
 
-st.write("Upload your voice explanation and receive AI-powered feedback.")
+student_name = st.text_input(
+    "Enter Student Name"
+)
+
+st.write("Upload your voice explanation and receive AI-powered evaluation.")
 
 st.divider()
 
 concept = st.selectbox(
-    "Select a Concept",
+    "Select Concept",
     [
         "Artificial Intelligence",
         "Machine Learning",
@@ -31,8 +35,8 @@ concept = st.selectbox(
 )
 
 audio_file = st.file_uploader(
-    "Upload Audio File",
-    type=["wav", "mp3", "m4a"]
+    "Upload Audio",
+    type=["wav", "mp3", "mp4", "m4a"]
 )
 
 if audio_file is not None:
@@ -44,16 +48,43 @@ if audio_file is not None:
     with open(audio_path, "wb") as f:
         f.write(audio_file.getbuffer())
 
-    st.success("Audio uploaded successfully!")
-
     st.audio(audio_file)
 
-    if st.button("Convert Speech to Text"):
+    if st.button("🚀 Evaluate"):
 
-        with st.spinner("Transcribing..."):
+        # Check whether the student entered a name
+        if not student_name.strip():
+            st.warning("⚠ Please enter your name before evaluating.")
+            st.stop()
 
-            transcript = transcribe_audio(audio_path)
+        with st.spinner("Analyzing... Please wait..."):
 
-        st.subheader("Transcript")
+            result = evaluate_audio(
+                audio_path,
+                concept,
+                student_name
+            )
 
-        st.write(transcript)
+        st.success("✅ Analysis Completed!")
+
+        st.subheader("📝 Transcript")
+        st.write(result["transcript"])
+
+        st.subheader("📊 Semantic Similarity")
+        st.metric("Similarity Score", f'{result["similarity"]}%')
+
+        st.subheader("🤖 Gemini AI Feedback")
+        st.write(result["feedback"])
+
+        # -----------------------------
+        # PDF Download Section
+        # -----------------------------
+        st.subheader("📄 Download Evaluation Report")
+
+        with open(result["pdf_path"], "rb") as pdf_file:
+            st.download_button(
+                label="📥 Download PDF Report",
+                data=pdf_file,
+                file_name=f"{student_name}_Evaluation_Report.pdf",
+                mime="application/pdf"
+            )

@@ -1,8 +1,14 @@
-from sentence_transformers import SentenceTransformer
-from sentence_transformers import util
+from functools import lru_cache
 
-# Load the model once
-model = SentenceTransformer("all-MiniLM-L6-v2")
+from sentence_transformers import SentenceTransformer, util
+
+
+@lru_cache(maxsize=1)
+def load_semantic_model():
+    """
+    Load the Sentence Transformers model once per process.
+    """
+    return SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
 
 
 def calculate_similarity(reference_text: str, user_text: str) -> float:
@@ -11,9 +17,24 @@ def calculate_similarity(reference_text: str, user_text: str) -> float:
     Returns similarity percentage.
     """
 
-    reference_embedding = model.encode(reference_text, convert_to_tensor=True)
-    user_embedding = model.encode(user_text, convert_to_tensor=True)
+    if not reference_text or not user_text:
+        return 0.0
 
-    similarity = util.cos_sim(reference_embedding, user_embedding)
+    model = load_semantic_model()
 
-    return round(float(similarity) * 100, 2)
+    reference_embedding = model.encode(
+        reference_text,
+        convert_to_tensor=True
+    )
+
+    user_embedding = model.encode(
+        user_text,
+        convert_to_tensor=True
+    )
+
+    similarity = util.cos_sim(
+        reference_embedding,
+        user_embedding
+    )
+
+    return round(float(similarity.item()) * 100, 2)

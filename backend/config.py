@@ -1,12 +1,13 @@
 import os
 from dotenv import load_dotenv
 
-# Load environment variables from .env when running locally.
+# Load environment variables from the local .env file
 load_dotenv()
 
-# Works with local .env and cloud environment variables.
+# Read the Gemini API key from environment variables
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
+# Validate the API key
 if not GOOGLE_API_KEY:
     raise ValueError(
         "GOOGLE_API_KEY is missing. "

@@ -57,7 +57,7 @@ def generate_pdf(student_name, concept, transcript, similarity, feedback):
 
     story.append(Spacer(1, 20))
 
-    # Student name
+    # Student information
     story.append(
         Paragraph(
             f"<b>Student Name:</b> {escape(str(student_name))}",

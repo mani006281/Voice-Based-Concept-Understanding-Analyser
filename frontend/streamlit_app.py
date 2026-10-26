@@ -12,9 +12,17 @@ sys.path.append(
 from backend.services import evaluate_audio
 from database.database import init_db
 
-# Initialize database tables when the application starts
-init_db()
 
+@st.cache_resource
+def initialize_database():
+    """
+    Initialize database tables once per Streamlit server process.
+    """
+    init_db()
+    return True
+
+
+initialize_database()
 
 # -----------------------------------
 # Streamlit Page Configuration

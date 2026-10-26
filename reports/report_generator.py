@@ -1,36 +1,123 @@
-from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer
+)
+
 from reportlab.lib.styles import getSampleStyleSheet
 from datetime import datetime
-import os
+from pathlib import Path
+from html import escape
+from uuid import uuid4
+
+
+# Get project root directory
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Directory for generated reports
+REPORTS_DIR = BASE_DIR / "reports"
 
 
 def generate_pdf(student_name, concept, transcript, similarity, feedback):
 
-    os.makedirs("reports", exist_ok=True)
+    # Create reports directory if it doesn't exist
+    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 
-    filename = f"reports/{student_name.replace(' ', '_')}_report.pdf"
+    # Generate a unique filename
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    unique_id = uuid4().hex[:8]
 
-    doc = SimpleDocTemplate(filename)
+    filename = REPORTS_DIR / f"evaluation_{timestamp}_{unique_id}.pdf"
+
+    # Create PDF document
+    doc = SimpleDocTemplate(
+        str(filename),
+        pagesize=(595.27, 841.89),
+        rightMargin=40,
+        leftMargin=40,
+        topMargin=40,
+        bottomMargin=40
+    )
 
     styles = getSampleStyleSheet()
 
     story = []
 
-    story.append(Paragraph("<b>Voice Based Concept Understanding Analyser</b>", styles["Title"]))
+    # Report title
+    story.append(
+        Paragraph(
+            "Voice Based Concept Understanding Analyser",
+            styles["Title"]
+        )
+    )
 
-    story.append(Paragraph(f"<b>Student Name:</b> {student_name}", styles["BodyText"]))
-    story.append(Paragraph(f"<b>Concept:</b> {concept}", styles["BodyText"]))
-    story.append(Paragraph(f"<b>Date:</b> {datetime.now().strftime('%d-%m-%Y %H:%M')}", styles["BodyText"]))
+    story.append(Spacer(1, 20))
 
-    story.append(Paragraph("<br/><b>Transcript</b>", styles["Heading2"]))
-    story.append(Paragraph(transcript, styles["BodyText"]))
+    # Student information
+    story.append(
+        Paragraph(
+            f"<b>Student Name:</b> {escape(str(student_name))}",
+            styles["BodyText"]
+        )
+    )
 
-    story.append(Paragraph("<br/><b>Semantic Similarity</b>", styles["Heading2"]))
-    story.append(Paragraph(f"{similarity:.2f}%", styles["BodyText"]))
+    story.append(
+        Paragraph(
+            f"<b>Concept:</b> {escape(str(concept))}",
+            styles["BodyText"]
+        )
+    )
 
-    story.append(Paragraph("<br/><b>Gemini AI Feedback</b>", styles["Heading2"]))
-    story.append(Paragraph(feedback.replace("\n", "<br/>"), styles["BodyText"]))
+    story.append(
+        Paragraph(
+            f"<b>Date:</b> {datetime.now().strftime('%d-%m-%Y %H:%M')}",
+            styles["BodyText"]
+        )
+    )
 
+    story.append(Spacer(1, 20))
+
+    # Transcript
+    story.append(
+        Paragraph("Transcript", styles["Heading2"])
+    )
+
+    story.append(
+        Paragraph(
+            escape(str(transcript)).replace("\n", "<br/>"),
+            styles["BodyText"]
+        )
+    )
+
+    story.append(Spacer(1, 15))
+
+    # Semantic similarity
+    story.append(
+        Paragraph("Semantic Similarity", styles["Heading2"])
+    )
+
+    story.append(
+        Paragraph(
+            f"{float(similarity):.2f}%",
+            styles["BodyText"]
+        )
+    )
+
+    story.append(Spacer(1, 15))
+
+    # Gemini feedback
+    story.append(
+        Paragraph("Gemini AI Feedback", styles["Heading2"])
+    )
+
+    story.append(
+        Paragraph(
+            escape(str(feedback)).replace("\n", "<br/>"),
+            styles["BodyText"]
+        )
+    )
+
+    # Generate PDF
     doc.build(story)
 
-    return filename
+    return str(filename)

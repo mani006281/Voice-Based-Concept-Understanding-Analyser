@@ -1,47 +1,55 @@
-# Virtual Environment
+# ==================================
+# Python Virtual Environments
+# ==================================
 venv/
+.venv/
 
-# Python
+# ==================================
+# Python Cache
+# ==================================
 __pycache__/
 *.pyc
 *.pyo
 
-# Environment Variables
+# ==================================
+# Environment Variables and Secrets
+# ==================================
 .env
+.env.*
+!.env.example
+.streamlit/secrets.toml
 
-# Database
+# ==================================
+# Local Database
+# ==================================
 *.db
 *.sqlite3
 
-# IDE
+# ==================================
+# IDE Files
+# ==================================
 .vscode/
+.idea/
 
-# OS Files
+# ==================================
+# Operating System Files
+# ==================================
 .DS_Store
 Thumbs.db
 
-# Generated Reports
+# ==================================
+# Generated PDF Reports
+# ==================================
 reports/*.pdf
 
-# Uploaded Audio (optional)
+# ==================================
+# Uploaded Audio
+# ==================================
 uploads/*
 !uploads/.gitkeep
-# Virtual Environment
-venv/
 
-# Environment Variables
-.env
-
-# Python
-__pycache__/
-*.pyc
-
-# IDE
-.vscode/
-
-# Database
-*.db
-*.sqlite3
-
-# Reports
-reports/*.pdf
+# ==================================
+# Temporary Files
+# ==================================
+*.log
+*.tmp

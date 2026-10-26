@@ -6,6 +6,10 @@ import streamlit as st
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from backend.services import evaluate_audio
+from database.database import init_db
+
+# Initialize database tables when the application starts
+init_db()
 
 st.set_page_config(
     page_title="Voice Based Concept Understanding Analyser",
@@ -36,7 +40,8 @@ concept = st.selectbox(
 
 audio_file = st.file_uploader(
     "Upload Audio",
-    type=["wav", "mp3", "mp4", "m4a"]
+    type=["wav", "mp3", "mp4", "m4a", "ogg"],
+    help="Supported formats: WAV, MP3, MP4, M4A, OGG"
 )
 
 if audio_file is not None:
